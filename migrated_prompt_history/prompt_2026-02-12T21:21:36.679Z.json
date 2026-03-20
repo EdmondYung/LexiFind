@@ -1,0 +1,468 @@
+[
+  {
+    "id": 0,
+    "author": "user",
+    "payload": {
+      "type": "text",
+      "text": "app that can intelligently search for the court case worldwide with keywords like parties involved or case number, etc",
+      "files": [],
+      "fileUploads": [],
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770930297,
+      "nanos": 155000000
+    }
+  },
+  {
+    "id": 1,
+    "author": "model",
+    "payload": {
+      "type": "thinking",
+      "text": "**Defining the Project Scope**\n\nI'm now zeroing in on defining the project's scope. The core requirement is a React app for global court case searches via keywords. The \"intelligent\" aspect implies integrating the Gemini API to enhance search capabilities. I am considering keyword filtering and search suggestions. I want this to be intuitive and useful.\n\n\n**Refining AI Integration**\n\nI'm now integrating AI. The strategy now leverages the `googleSearch` tool within Gemini to ground the search in real-time information, which means less reliance on Gemini's direct knowledge. I also plan to use Gemini to summarize cases after they are found. Refining the process will refine natural language search queries into structured parameters. I believe this will provide better results.\n\n\n**Detailing the User Interface**\n\nI'm now detailing the user interface. I'll need a modal or expandable section for displaying AI summaries of a specific court case. I also have to implement and link crucial detail views.\n\n\n**Outlining Application Architecture**\n\nI'm presently outlining the application architecture and component breakdown. I've sketched out the crucial components, from the `Service.ts` search function (leveraging Gemini's `googleSearch` tool), to `App.tsx` handling state, and `SearchBar.tsx`, `CaseCard.tsx`, `Header.tsx`, and `Footer.tsx`. Specifically, the search function in `Service.ts` is designed for natural language queries like \"Apple vs Samsung patent dispute\", which can then generate markdown output to ease rendering of results.\n\n\n**Refining the Query Process**\n\nI'm now focusing on refining how the application processes queries. I'll stick with a direct search. I recognize the initial prompt of \"intelligently search\", but the most reliable way to search globally is directly. I'll need to parse the citations from Gemini's response to build clickable links to sources. I want to build out a seamless transition between search input, Gemini's response, and source links.\n\n\\n\\n\n**Defining App Metadata and Dependencies**\n\nI am now defining application metadata and dependencies. I'm calling it \"LexiSearch - Global Court Case Finder\". I've got the dependencies covered: `lucide-react` for icons and `react-markdown` for rendering formatted text. I'll keep the styling simple with a slate/blue palette for a trustworthy, legal feel. The `geminiService.ts` for the service layer is coming along well.\n\n\n**Implementing Search & Results**\n\nI'm now implementing the `searchCases` function, using `gemini-3-flash-preview` and incorporating Google Search. Next, I'm building out the `SearchResults` component, which will render Markdown and display the extracted sources. The \"intelligence\" is emerging through Gemini's ability to interpret vague queries, like the \"monkey selfie\" case, which will translate into more specific results. Now I'm focusing on the \"Deep Analysis\" feature. It allows a user to get a detailed legal summary using `gemini-3-pro-preview` after a case is selected.\n\n\n**Considering Navigation Alternatives**\n\nI'm now contemplating navigation. I am still evaluating the need for a router in this single-page search application. I'm leaning toward conditional rendering for a smoother experience. I am still deciding on the navigation structure.\n\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770930297,
+      "nanos": 156000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770930320,
+      "nanos": 809000000
+    }
+  },
+  {
+    "id": 2,
+    "author": "model",
+    "payload": {
+      "type": "generationTable",
+      "entries": [
+        {
+          "path": "metadata.json",
+          "generationType": 0,
+          "isDone": true,
+          "description": "App metadata definition",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "{\n  \"name\": \"LexiFind Global\",\n  \"description\": \"An intelligent worldwide court case search engine powered by Gemini. Find cases by parties, keywords, or case numbers with real-time web grounding and deep legal analysis.\"\n}"
+            }
+          ]
+        },
+        {
+          "path": "index.html",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Root HTML file with Tailwind and font imports",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>LexiFind - Intelligent Case Search</title>\n    <script src=\"https://cdn.tailwindcss.com\"></script>\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap\" rel=\"stylesheet\">\n    <script>\n      tailwind.config = {\n        theme: {\n          extend: {\n            fontFamily: {\n              sans: ['Inter', 'sans-serif'],\n              serif: ['Playfair Display', 'serif'],\n            },\n            colors: {\n              slate: {\n                850: '#1e293b',\n                900: '#0f172a',\n              },\n              brand: {\n                50: '#eff6ff',\n                100: '#dbeafe',\n                500: '#3b82f6',\n                600: '#2563eb',\n                900: '#1e3a8a',\n              }\n            }\n          }\n        }\n      }\n    </script>\n    <style>\n      /* Custom scrollbar for better aesthetics */\n      ::-webkit-scrollbar {\n        width: 8px;\n        height: 8px;\n      }\n      ::-webkit-scrollbar-track {\n        background: #f1f5f9; \n      }\n      ::-webkit-scrollbar-thumb {\n        background: #cbd5e1; \n        border-radius: 4px;\n      }\n      ::-webkit-scrollbar-thumb:hover {\n        background: #94a3b8; \n      }\n    </style>\n  </head>\n  <body class=\"bg-slate-50 text-slate-900 antialiased selection:bg-brand-100 selection:text-brand-900\">\n    <div id=\"root\"></div>\n    <script type=\"module\" src=\"/index.tsx\"></script>\n  </body>\n</html>"
+            }
+          ]
+        },
+        {
+          "path": "index.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Application entry point",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React from 'react';\nimport ReactDOM from 'react-dom/client';\nimport App from './App';\n\nconst rootElement = document.getElementById('root');\nif (!rootElement) {\n  throw new Error(\"Could not find root element to mount to\");\n}\n\nconst root = ReactDOM.createRoot(rootElement);\nroot.render(\n  <React.StrictMode>\n    <App />\n  </React.StrictMode>\n);"
+            }
+          ]
+        },
+        {
+          "path": "types.ts",
+          "generationType": 0,
+          "isDone": true,
+          "description": "TypeScript definitions for the application",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "export interface GroundingChunk {\n  web?: {\n    uri: string;\n    title: string;\n  };\n}\n\nexport interface SearchResponse {\n  text: string;\n  groundingChunks: GroundingChunk[];\n}\n\nexport enum SearchStatus {\n  IDLE = 'IDLE',\n  SEARCHING = 'SEARCHING',\n  ANALYZING = 'ANALYZING',\n  SUCCESS = 'SUCCESS',\n  ERROR = 'ERROR',\n}\n\nexport interface CaseAnalysis {\n  summary: string;\n  keyPoints: string[];\n  implications: string;\n}\n\nexport type AnalysisType = 'basic' | 'deep';"
+            }
+          ]
+        },
+        {
+          "path": "services/gemini.ts",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Gemini service for search and analysis",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import { GoogleGenAI, Tool } from \"@google/genai\";\nimport { SearchResponse, CaseAnalysis } from \"../types\";\n\n// Helper to ensure API key exists\nconst getClient = () => {\n  const apiKey = process.env.API_KEY;\n  if (!apiKey) {\n    throw new Error(\"API Key is missing. Please ensure process.env.API_KEY is available.\");\n  }\n  return new GoogleGenAI({ apiKey });\n};\n\n/**\n * Searches for court cases using the `googleSearch` tool for real-time grounding.\n */\nexport const searchCases = async (query: string): Promise<SearchResponse> => {\n  const ai = getClient();\n  \n  // Using gemini-3-flash-preview for speed and search capability\n  const modelId = 'gemini-3-flash-preview'; \n\n  const prompt = `\n    Search for court cases worldwide related to: \"${query}\".\n    \n    If the query is vague, try to identify famous cases that match.\n    Provide a comprehensive overview of the most relevant cases found.\n    For each case, clearly state:\n    1. Case Name\n    2. Case Number (if available)\n    3. Jurisdiction/Court\n    4. Date\n    5. A concise summary of the holding/verdict.\n\n    Structure the response in clean Markdown. Use bolding for Case Names.\n    Do not invent cases; strictly use the Google Search grounding data provided.\n  `;\n\n  try {\n    const response = await ai.models.generateContent({\n      model: modelId,\n      contents: prompt,\n      config: {\n        tools: [{ googleSearch: {} } as Tool],\n      },\n    });\n\n    const text = response.text || \"No results found.\";\n    // Safe extraction of grounding chunks\n    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];\n\n    return {\n      text,\n      groundingChunks: groundingChunks.map((chunk: any) => ({\n        web: chunk.web ? { uri: chunk.web.uri, title: chunk.web.title } : undefined\n      })).filter((c: any) => c.web !== undefined)\n    };\n\n  } catch (error) {\n    console.error(\"Search failed:\", error);\n    throw error;\n  }\n};\n\n/**\n * Performs a deeper analysis of a specific legal concept or text using the Pro model.\n * This does not use Google Search, but relies on the model's internal reasoning.\n */\nexport const analyzeLegalConcept = async (context: string): Promise<CaseAnalysis> => {\n  const ai = getClient();\n  // Using gemini-3-pro-preview for complex reasoning\n  const modelId = 'gemini-3-pro-preview';\n\n  const prompt = `\n    Analyze the following legal text or case summary and provide a structured breakdown.\n    \n    Context:\n    \"${context}\"\n\n    Return the result in JSON format with the following keys:\n    - summary: A professional executive summary (max 3 sentences).\n    - keyPoints: An array of strings representing the key legal arguments or facts.\n    - implications: A string explaining the broader legal or social implications of this.\n  `;\n\n  try {\n    const response = await ai.models.generateContent({\n      model: modelId,\n      contents: prompt,\n      config: {\n        responseMimeType: \"application/json\",\n      }\n    });\n\n    const text = response.text || \"{}\";\n    return JSON.parse(text) as CaseAnalysis;\n\n  } catch (error) {\n    console.error(\"Analysis failed:\", error);\n    // Fallback if JSON parsing fails or API errors\n    return {\n      summary: \"Could not generate analysis.\",\n      keyPoints: [\"Analysis unavailable\"],\n      implications: \"Please try again.\"\n    };\n  }\n};"
+            }
+          ]
+        },
+        {
+          "path": "components/Header.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Application header component",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React from 'react';\nimport { Scale, Globe, BookOpen } from 'lucide-react';\n\nexport const Header: React.FC = () => {\n  return (\n    <header className=\"bg-white border-b border-slate-200 sticky top-0 z-50\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">\n        <div className=\"flex justify-between items-center h-16\">\n          <div className=\"flex items-center space-x-3\">\n            <div className=\"bg-brand-600 p-2 rounded-lg text-white\">\n              <Scale size={24} />\n            </div>\n            <div>\n              <h1 className=\"text-xl font-bold font-serif text-slate-900 tracking-tight\">LexiFind</h1>\n              <p className=\"text-xs text-slate-500 font-medium tracking-wide\">GLOBAL CASE INTELLIGENCE</p>\n            </div>\n          </div>\n          <nav className=\"hidden md:flex space-x-8\">\n            <a href=\"#\" className=\"flex items-center text-slate-600 hover:text-brand-600 transition-colors text-sm font-medium\">\n              <Globe size={16} className=\"mr-2\" /> Global Search\n            </a>\n            <a href=\"#\" className=\"flex items-center text-slate-600 hover:text-brand-600 transition-colors text-sm font-medium\">\n              <BookOpen size={16} className=\"mr-2\" /> Case Law Analytics\n            </a>\n          </nav>\n        </div>\n      </div>\n    </header>\n  );\n};"
+            }
+          ]
+        },
+        {
+          "path": "components/SearchArea.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Search input area with filters",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React, { useState, useCallback } from 'react';\nimport { Search, Loader2 } from 'lucide-react';\n\ninterface SearchAreaProps {\n  onSearch: (query: string) => void;\n  isSearching: boolean;\n}\n\nexport const SearchArea: React.FC<SearchAreaProps> = ({ onSearch, isSearching }) => {\n  const [query, setQuery] = useState('');\n\n  const handleSubmit = (e: React.FormEvent) => {\n    e.preventDefault();\n    if (query.trim()) {\n      onSearch(query);\n    }\n  };\n\n  return (\n    <div className=\"bg-white border-b border-slate-200 py-12 px-4 sm:px-6 lg:px-8 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-50 via-white to-white\">\n      <div className=\"max-w-3xl mx-auto text-center space-y-8\">\n        <div>\n          <h2 className=\"text-3xl sm:text-4xl font-serif font-bold text-slate-900 mb-4\">\n            Find legal precedents, <span className=\"text-brand-600\">instantly.</span>\n          </h2>\n          <p className=\"text-lg text-slate-600 max-w-2xl mx-auto\">\n            Search millions of court cases worldwide using natural language. \n            Powered by Gemini to understand context, parties, and legal nuances.\n          </p>\n        </div>\n\n        <form onSubmit={handleSubmit} className=\"relative max-w-2xl mx-auto group\">\n          <div className=\"absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none\">\n            {isSearching ? (\n              <Loader2 className=\"h-5 w-5 text-brand-500 animate-spin\" />\n            ) : (\n              <Search className=\"h-5 w-5 text-slate-400 group-focus-within:text-brand-500 transition-colors\" />\n            )}\n          </div>\n          <input\n            type=\"text\"\n            className=\"block w-full pl-11 pr-4 py-4 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent shadow-sm hover:shadow-md transition-shadow text-lg\"\n            placeholder=\"e.g., 'Apple vs Samsung patent dispute' or 'Civil rights cases 2023'\"\n            value={query}\n            onChange={(e) => setQuery(e.target.value)}\n            disabled={isSearching}\n          />\n          <div className=\"absolute inset-y-0 right-2 flex items-center\">\n            <button\n              type=\"submit\"\n              disabled={isSearching || !query.trim()}\n              className=\"bg-brand-600 hover:bg-brand-700 disabled:bg-slate-300 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors\"\n            >\n              Search\n            </button>\n          </div>\n        </form>\n\n        <div className=\"flex flex-wrap justify-center gap-2 text-sm text-slate-500\">\n          <span className=\"font-medium text-slate-700\">Try:</span>\n          <button onClick={() => setQuery(\"Roe v. Wade overturn details\")} className=\"hover:text-brand-600 underline decoration-slate-300 hover:decoration-brand-300 underline-offset-2\">Roe v. Wade</button>\n          <span className=\"text-slate-300\">•</span>\n          <button onClick={() => setQuery(\"Copyright cases involving AI art\")} className=\"hover:text-brand-600 underline decoration-slate-300 hover:decoration-brand-300 underline-offset-2\">AI Copyright</button>\n          <span className=\"text-slate-300\">•</span>\n          <button onClick={() => setQuery(\"GDPR fines against tech giants\")} className=\"hover:text-brand-600 underline decoration-slate-300 hover:decoration-brand-300 underline-offset-2\">GDPR Fines</button>\n        </div>\n      </div>\n    </div>\n  );\n};"
+            }
+          ]
+        },
+        {
+          "path": "components/AnalysisModal.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Modal to display deep analysis of the search results",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React from 'react';\nimport { X, Sparkles, AlertCircle, CheckCircle2, BookOpenCheck } from 'lucide-react';\nimport { CaseAnalysis } from '../types';\n\ninterface AnalysisModalProps {\n  isOpen: boolean;\n  onClose: () => void;\n  analysis: CaseAnalysis | null;\n  isLoading: boolean;\n}\n\nexport const AnalysisModal: React.FC<AnalysisModalProps> = ({ isOpen, onClose, analysis, isLoading }) => {\n  if (!isOpen) return null;\n\n  return (\n    <div className=\"fixed inset-0 z-50 overflow-y-auto\" aria-labelledby=\"modal-title\" role=\"dialog\" aria-modal=\"true\">\n      <div className=\"flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0\">\n        <div className=\"fixed inset-0 bg-slate-900 bg-opacity-75 transition-opacity\" aria-hidden=\"true\" onClick={onClose}></div>\n\n        <span className=\"hidden sm:inline-block sm:align-middle sm:h-screen\" aria-hidden=\"true\">&#8203;</span>\n\n        <div className=\"inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full\">\n          <div className=\"bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4\">\n            <div className=\"flex justify-between items-start mb-5\">\n              <div className=\"flex items-center space-x-2\">\n                <div className=\"bg-purple-100 p-2 rounded-lg\">\n                  <Sparkles className=\"h-5 w-5 text-purple-600\" />\n                </div>\n                <h3 className=\"text-lg leading-6 font-serif font-bold text-slate-900\" id=\"modal-title\">\n                  AI Legal Analysis\n                </h3>\n              </div>\n              <button\n                onClick={onClose}\n                className=\"bg-white rounded-md text-slate-400 hover:text-slate-500 focus:outline-none\"\n              >\n                <X className=\"h-6 w-6\" />\n              </button>\n            </div>\n\n            {isLoading ? (\n              <div className=\"flex flex-col items-center justify-center py-12 space-y-4\">\n                <LoaderSpinner />\n                <p className=\"text-slate-500 animate-pulse\">Analyzing legal context and implications...</p>\n              </div>\n            ) : analysis ? (\n              <div className=\"space-y-6\">\n                <div className=\"bg-slate-50 p-4 rounded-xl border border-slate-100\">\n                  <h4 className=\"text-sm font-semibold text-slate-900 uppercase tracking-wider mb-2 flex items-center\">\n                    <BookOpenCheck className=\"w-4 h-4 mr-2 text-brand-600\" />\n                    Executive Summary\n                  </h4>\n                  <p className=\"text-slate-700 leading-relaxed text-sm\">{analysis.summary}</p>\n                </div>\n\n                <div>\n                  <h4 className=\"text-sm font-semibold text-slate-900 uppercase tracking-wider mb-3 flex items-center\">\n                    <CheckCircle2 className=\"w-4 h-4 mr-2 text-green-600\" />\n                    Key Points\n                  </h4>\n                  <ul className=\"space-y-2\">\n                    {analysis.keyPoints.map((point, idx) => (\n                      <li key={idx} className=\"flex items-start text-sm text-slate-700\">\n                        <span className=\"mr-2 mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400\"></span>\n                        {point}\n                      </li>\n                    ))}\n                  </ul>\n                </div>\n\n                <div>\n                  <h4 className=\"text-sm font-semibold text-slate-900 uppercase tracking-wider mb-2 flex items-center\">\n                    <AlertCircle className=\"w-4 h-4 mr-2 text-amber-600\" />\n                    Broader Implications\n                  </h4>\n                  <p className=\"text-sm text-slate-600 italic border-l-2 border-amber-200 pl-4 py-1\">\n                    \"{analysis.implications}\"\n                  </p>\n                </div>\n              </div>\n            ) : (\n              <div className=\"text-center py-8 text-slate-500\">\n                Failed to load analysis.\n              </div>\n            )}\n          </div>\n          <div className=\"bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse\">\n            <button\n              type=\"button\"\n              className=\"w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-slate-900 text-base font-medium text-white hover:bg-slate-800 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm\"\n              onClick={onClose}\n            >\n              Close\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n};\n\nconst LoaderSpinner = () => (\n  <svg className=\"animate-spin h-8 w-8 text-brand-600\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\">\n    <circle className=\"opacity-25\" cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" strokeWidth=\"4\"></circle>\n    <path className=\"opacity-75\" fill=\"currentColor\" d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"></path>\n  </svg>\n);"
+            }
+          ]
+        },
+        {
+          "path": "App.tsx",
+          "generationType": 0,
+          "isDone": true,
+          "description": "Main application logic",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React, { useState } from 'react';\nimport ReactMarkdown from 'react-markdown';\nimport { Header } from './components/Header';\nimport { SearchArea } from './components/SearchArea';\nimport { AnalysisModal } from './components/AnalysisModal';\nimport { searchCases, analyzeLegalConcept } from './services/gemini';\nimport { SearchStatus, GroundingChunk, CaseAnalysis } from './types';\nimport { ExternalLink, Sparkles, AlertTriangle, FileText } from 'lucide-react';\n\nconst App: React.FC = () => {\n  const [status, setStatus] = useState<SearchStatus>(SearchStatus.IDLE);\n  const [searchResult, setSearchResult] = useState<{ text: string; sources: GroundingChunk[] } | null>(null);\n  const [errorMsg, setErrorMsg] = useState<string | null>(null);\n  \n  // Analysis Modal State\n  const [isModalOpen, setIsModalOpen] = useState(false);\n  const [analysisLoading, setAnalysisLoading] = useState(false);\n  const [analysisResult, setAnalysisResult] = useState<CaseAnalysis | null>(null);\n\n  const handleSearch = async (query: string) => {\n    setStatus(SearchStatus.SEARCHING);\n    setErrorMsg(null);\n    setSearchResult(null);\n\n    try {\n      const response = await searchCases(query);\n      setSearchResult({\n        text: response.text,\n        sources: response.groundingChunks\n      });\n      setStatus(SearchStatus.SUCCESS);\n    } catch (err: any) {\n      console.error(err);\n      setErrorMsg(\"Unable to complete search. Please check your connection or try again.\");\n      setStatus(SearchStatus.ERROR);\n    }\n  };\n\n  const handleAnalyze = async () => {\n    if (!searchResult?.text) return;\n    \n    setIsModalOpen(true);\n    setAnalysisLoading(true);\n    try {\n      // Analyze the currently found text\n      const result = await analyzeLegalConcept(searchResult.text);\n      setAnalysisResult(result);\n    } catch (err) {\n      console.error(err);\n    } finally {\n      setAnalysisLoading(false);\n    }\n  };\n\n  return (\n    <div className=\"min-h-screen bg-slate-50 flex flex-col\">\n      <Header />\n      \n      <main className=\"flex-grow\">\n        <SearchArea onSearch={handleSearch} isSearching={status === SearchStatus.SEARCHING} />\n\n        {/* Error State */}\n        {status === SearchStatus.ERROR && (\n          <div className=\"max-w-4xl mx-auto px-4 mt-8\">\n            <div className=\"bg-red-50 border border-red-200 rounded-lg p-4 flex items-center text-red-700\">\n              <AlertTriangle className=\"h-5 w-5 mr-3\" />\n              {errorMsg}\n            </div>\n          </div>\n        )}\n\n        {/* Results State */}\n        {status === SearchStatus.SUCCESS && searchResult && (\n          <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8\">\n            <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-8\">\n              \n              {/* Left Column: AI Response */}\n              <div className=\"lg:col-span-2 space-y-6\">\n                <div className=\"bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden\">\n                  <div className=\"px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center\">\n                    <div className=\"flex items-center space-x-2 text-slate-700\">\n                      <FileText className=\"h-4 w-4\" />\n                      <span className=\"font-semibold text-sm uppercase tracking-wide\">Search Findings</span>\n                    </div>\n                    <button \n                      onClick={handleAnalyze}\n                      className=\"flex items-center space-x-2 text-xs font-semibold bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full hover:bg-purple-100 transition-colors border border-purple-100\"\n                    >\n                      <Sparkles className=\"h-3 w-3\" />\n                      <span>Generate Deep Analysis</span>\n                    </button>\n                  </div>\n                  \n                  <div className=\"p-6 sm:p-8 prose prose-slate prose-sm sm:prose-base max-w-none prose-headings:font-serif prose-headings:font-bold prose-a:text-brand-600 hover:prose-a:text-brand-700\">\n                    <ReactMarkdown>\n                      {searchResult.text}\n                    </ReactMarkdown>\n                  </div>\n                </div>\n              </div>\n\n              {/* Right Column: Sources */}\n              <div className=\"lg:col-span-1 space-y-6\">\n                <div className=\"bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sticky top-24\">\n                  <h3 className=\"text-sm font-semibold text-slate-900 uppercase tracking-wide mb-4 border-b border-slate-100 pb-2\">\n                    Verified Sources\n                  </h3>\n                  \n                  {searchResult.sources.length === 0 ? (\n                    <p className=\"text-sm text-slate-500 italic\">No direct sources linked.</p>\n                  ) : (\n                    <ul className=\"space-y-3\">\n                      {searchResult.sources.map((source, index) => (\n                        <li key={index} className=\"group\">\n                          <a \n                            href={source.web?.uri} \n                            target=\"_blank\" \n                            rel=\"noopener noreferrer\"\n                            className=\"block p-3 rounded-xl bg-slate-50 hover:bg-brand-50 border border-transparent hover:border-brand-200 transition-all duration-200\"\n                          >\n                            <div className=\"flex justify-between items-start\">\n                              <span className=\"text-xs font-semibold text-brand-600 mb-1 block\">\n                                Source {index + 1}\n                              </span>\n                              <ExternalLink className=\"h-3 w-3 text-slate-400 group-hover:text-brand-500\" />\n                            </div>\n                            <p className=\"text-sm text-slate-800 font-medium line-clamp-2\">\n                              {source.web?.title || \"Untitled Source\"}\n                            </p>\n                            <p className=\"text-xs text-slate-500 mt-1 truncate\">\n                              {source.web?.uri}\n                            </p>\n                          </a>\n                        </li>\n                      ))}\n                    </ul>\n                  )}\n                  \n                  <div className=\"mt-6 pt-4 border-t border-slate-100\">\n                    <p className=\"text-xs text-slate-400\">\n                      Disclaimer: Information provided is for research purposes only and does not constitute legal advice. Always verify with official court records.\n                    </p>\n                  </div>\n                </div>\n              </div>\n\n            </div>\n          </div>\n        )}\n      </main>\n\n      {/* Analysis Modal */}\n      <AnalysisModal \n        isOpen={isModalOpen} \n        onClose={() => setIsModalOpen(false)} \n        analysis={analysisResult}\n        isLoading={analysisLoading}\n      />\n\n    </div>\n  );\n};\n\nexport default App;"
+            }
+          ]
+        }
+      ]
+    },
+    "createdTimestamp": {
+      "seconds": 1770930320,
+      "nanos": 810000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770930321,
+      "nanos": 497000000
+    }
+  },
+  {
+    "id": 4,
+    "author": "user",
+    "payload": {
+      "type": "text",
+      "text": "propose enhancements and updates, for better user experience and allow sorting the results by jurisdiction, etc",
+      "files": [],
+      "fileUploads": [],
+      "cssBlocks": [],
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770930723,
+      "nanos": 180000000
+    }
+  },
+  {
+    "id": 5,
+    "author": "model",
+    "payload": {
+      "type": "thinking",
+      "text": "**Refining Search Application**\n\nI'm focusing on enhancing the court case search application. My key priorities include improving the user experience and implementing robust sorting and filtering capabilities. Specifically, I'm concentrating on allowing users to filter results by jurisdiction, which I know is crucial for efficient research. I have started by assessing the existing keyword search functionality.\n\n\n**Enhancing Search Results**\n\nI'm now prioritizing refining the search request to get structured JSON data from Gemini instead of just Markdown. This should allow for much better sorting and filtering. While the Google search tool returns text, I will ask Gemini to format the output as JSON after processing search results. I have to manage the risk that the model may struggle with valid JSON when grounding, so I'm hoping my new prompt structure addresses that. I am also working on adding a filter/sort toolbar above the results, enabling users to sort by date and filter by jurisdiction and case type.\n\n\n**Implementing UI Refinements**\n\nI'm now implementing the UI updates. I'm focusing on improving the visual presentation and user interaction. Specifically, I'm working on replacing the large Markdown block with a card-based layout for each case. This should improve readability. I'm adding loading skeletons to improve UX while the data loads. I'll include badges for Jurisdiction and Year to present quick facts. I'm also updating the TypeScript definitions to reflect the structured data from Gemini.\n\n\n**Defining Data Structure**\n\nI've defined the data structure for the `Case` object, ensuring key fields like `id`, `name`, `citation`, `court`, `date`, `summary`, and `url` are included. I'm focusing on the service layer, updating the `searchCases` prompt to request JSON output from the model, and figuring out how to correlate grounding metadata with case details. I will have the model optionally include the source URL in the JSON if found in the search context. I'm also planning the app state, with arrays of case objects and the method of sorting.\n\n\n**Designing UI Structure**\n\nI'm now focusing on refining the UI structure to incorporate the new data and functionality. I'm updating the component hierarchy. I plan to keep the search area relatively simple. I'm prioritizing the results area, where I'll integrate a top bar with a case count, sorting options, and jurisdiction filter. The main content will display a grid of case cards, and a sidebar will show verified sources. I'm working on the type definitions now. I'm also planning the new service and response schema. I am focusing on using Google's `Type` and `SchemaType` from `@google/genai` to receive structured JSON results.\n\n\n**Integrating JSON Schemas**\n\nI'm now integrating JSON schemas and defining a `Case` interface, which includes key properties like `name`, `citation`, `jurisdiction`, `date`, `summary`, and `tags`. I'm updating components, adding a new `CaseCard.tsx` and updating `App.tsx` with sorting/filtering logic and rendering of the `CaseCard` list. I will also incorporate `lucide-react` icons for sorting/filtering and clean badges for tags to improve the aesthetics of the application. I will focus on the interplay between the Google Search tool and the `responseSchema`, aiming for reliable structured JSON output even with null search results.\n\n\n**Verifying Schema Implementation**\n\nI'm now verifying the implementation of `responseSchema` and updating `searchCases` to use it. I'm leveraging `gemini-3-flash-preview` for the text tasks. I've also implemented the sorting/filtering logic and created the new `CaseCard` and `ResultsToolbar` components. I am confirming the correct usage of the `responseSchema`, specifically the array of objects, and considering edge cases in `App.tsx`. I will verify parsing the JSON response from `response.text`, including cases with and without code blocks. I am working on sorting logic.\n\n\n**Structuring Case Data**\n\nI'm now focusing on date and jurisdiction fields within the data. I plan to handle date variations, normalizing them or string sorting in YYYY-MM-DD format. I'll use string comparison for the jurisdiction. I'm updating several files: `types.ts`, `services/gemini.ts`, `components/CaseCard.tsx`, `components/ResultsToolbar.tsx`, `App.tsx`, and `components/AnalysisModal.tsx`. I am focusing on the model prompt: to request dates be YYYY-MM-DD. I will update `AnalysisModal` to optionally use the selected case's summary.\n\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770930723,
+      "nanos": 181000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770930750,
+      "nanos": 964000000
+    }
+  },
+  {
+    "id": 6,
+    "author": "model",
+    "payload": {
+      "type": "text",
+      "text": "Here is the specification for the enhanced LexiFind Global application, featuring intelligent case parsing, structured results, and advanced filtering capabilities.\n\n### Specification\n\n1.  **Structured Data Extraction**:\n    *   Update the `searchCases` service to utilize Gemini's structured output capabilities (`responseSchema`).\n    *   The model will now return a strict JSON array of `Case` objects instead of unstructured Markdown.\n    *   Each `Case` will include: `name`, `citation`, `jurisdiction`, `date` (normalized), `summary`, and `tags` (e.g., \"Civil\", \"IP\").\n\n2.  **Advanced Result Management**:\n    *   **Card Layout**: Replace the text blob with individual `CaseCard` components for better readability.\n    *   **Sorting**: Enable sorting by **Date** (Newest/Oldest) and **Relevance** (default).\n    *   **Filtering**: Dynamically extract all \"Jurisdictions\" returned in the results and populate a filter dropdown, allowing users to drill down by region (e.g., \"Supreme Court\", \"California\", \"UK\").\n\n3.  **UI/UX Enhancements**:\n    *   **Toolbar**: Add a control bar above results for sort/filter actions.\n    *   **Tags & Badges**: Visual indicators for case types and jurisdictions.\n    *   **Interactive Analysis**: Allow users to click \"Analyze\" on a specific case card to trigger the deep dive modal for that specific precedent.\n\n### Code Updates\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770930750,
+      "nanos": 965000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770930751,
+      "nanos": 375000000
+    }
+  },
+  {
+    "id": 7,
+    "author": "model",
+    "payload": {
+      "type": "generationTable",
+      "entries": [
+        {
+          "path": "types.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Update types to support structured Case objects and sorting options",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "export interface GroundingChunk {\n  web?: {\n    uri: string;\n    title: string;\n  };\n}\n\nexport interface Case {\n  name: string;\n  citation: string;\n  jurisdiction: string;\n  date: string;\n  summary: string;\n  tags: string[];\n}\n\nexport interface SearchResponse {\n  cases: Case[];\n  groundingChunks: GroundingChunk[];\n}\n\nexport enum SearchStatus {\n  IDLE = 'IDLE',\n  SEARCHING = 'SEARCHING',\n  ANALYZING = 'ANALYZING',\n  SUCCESS = 'SUCCESS',\n  ERROR = 'ERROR',\n}\n\nexport interface CaseAnalysis {\n  summary: string;\n  keyPoints: string[];\n  implications: string;\n}\n\nexport type SortOption = 'relevance' | 'date_desc' | 'date_asc';"
+            }
+          ]
+        },
+        {
+          "path": "services/gemini.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Update searchCases to request JSON output and include structured schema",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import { GoogleGenAI, Tool, Type } from \"@google/genai\";\nimport { SearchResponse, CaseAnalysis, Case } from \"../types\";\n\n// Helper to ensure API key exists\nconst getClient = () => {\n  const apiKey = process.env.API_KEY;\n  if (!apiKey) {\n    throw new Error(\"API Key is missing. Please ensure process.env.API_KEY is available.\");\n  }\n  return new GoogleGenAI({ apiKey });\n};\n\n/**\n * Searches for court cases using the `googleSearch` tool and returns structured JSON.\n */\nexport const searchCases = async (query: string): Promise<SearchResponse> => {\n  const ai = getClient();\n  const modelId = 'gemini-3-flash-preview'; \n\n  const prompt = `\n    Search for court cases worldwide related to: \"${query}\".\n    \n    Goal: Identify real, specific court cases that match the query.\n    \n    Instructions:\n    1. Use Google Search to find accurate case details.\n    2. Return a list of cases found.\n    3. For each case, extract the Jurisdiction, Date (YYYY-MM-DD or YYYY), Case Number (Citation), and a brief summary.\n    4. Assign relevant tags (e.g., \"Criminal\", \"Civil\", \"IP\", \"Constitutional\").\n    5. If the exact date is unknown, estimate the year based on the search results.\n  `;\n\n  try {\n    const response = await ai.models.generateContent({\n      model: modelId,\n      contents: prompt,\n      config: {\n        tools: [{ googleSearch: {} } as Tool],\n        responseMimeType: \"application/json\",\n        responseSchema: {\n          type: Type.OBJECT,\n          properties: {\n            cases: {\n              type: Type.ARRAY,\n              items: {\n                type: Type.OBJECT,\n                properties: {\n                  name: { type: Type.STRING, description: \"Name of the case (e.g., Roe v. Wade)\" },\n                  citation: { type: Type.STRING, description: \"Case number or official citation\" },\n                  jurisdiction: { type: Type.STRING, description: \"Court or Jurisdiction (e.g., US Supreme Court, UK High Court)\" },\n                  date: { type: Type.STRING, description: \"Date of decision in YYYY-MM-DD or YYYY format\" },\n                  summary: { type: Type.STRING, description: \"Concise summary of the holding\" },\n                  tags: { type: Type.ARRAY, items: { type: Type.STRING } }\n                }\n              }\n            }\n          }\n        }\n      },\n    });\n\n    // Parse the JSON response\n    const jsonText = response.text || '{ \"cases\": [] }';\n    let parsedData: { cases: Case[] } = { cases: [] };\n    \n    try {\n      parsedData = JSON.parse(jsonText);\n    } catch (e) {\n      console.warn(\"Failed to parse JSON directly, attempting cleanup\", e);\n      // Fallback cleanup if model includes markdown blocks despite mimeType\n      const cleanJson = jsonText.replace(/```json/g, '').replace(/```/g, '');\n      parsedData = JSON.parse(cleanJson);\n    }\n\n    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];\n\n    return {\n      cases: parsedData.cases || [],\n      groundingChunks: groundingChunks.map((chunk: any) => ({\n        web: chunk.web ? { uri: chunk.web.uri, title: chunk.web.title } : undefined\n      })).filter((c: any) => c.web !== undefined)\n    };\n\n  } catch (error) {\n    console.error(\"Search failed:\", error);\n    throw error;\n  }\n};\n\n/**\n * Performs a deeper analysis of a specific legal concept or text using the Pro model.\n */\nexport const analyzeLegalConcept = async (context: string): Promise<CaseAnalysis> => {\n  const ai = getClient();\n  const modelId = 'gemini-3-pro-preview';\n\n  const prompt = `\n    Analyze the following legal case summary or text and provide a structured breakdown.\n    \n    Context:\n    \"${context}\"\n\n    Return the result in JSON format with the following keys:\n    - summary: A professional executive summary (max 3 sentences).\n    - keyPoints: An array of strings representing the key legal arguments or facts.\n    - implications: A string explaining the broader legal or social implications of this.\n  `;\n\n  try {\n    const response = await ai.models.generateContent({\n      model: modelId,\n      contents: prompt,\n      config: {\n        responseMimeType: \"application/json\",\n      }\n    });\n\n    const text = response.text || \"{}\";\n    return JSON.parse(text) as CaseAnalysis;\n\n  } catch (error) {\n    console.error(\"Analysis failed:\", error);\n    return {\n      summary: \"Could not generate analysis.\",\n      keyPoints: [\"Analysis unavailable\"],\n      implications: \"Please try again.\"\n    };\n  }\n};"
+            }
+          ]
+        },
+        {
+          "path": "components/CaseCard.tsx",
+          "generationType": 1,
+          "isDone": true,
+          "description": "New component to display individual case details",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React from 'react';\nimport { Calendar, Gavel, Scale, Tag, ChevronRight } from 'lucide-react';\nimport { Case } from '../types';\n\ninterface CaseCardProps {\n  data: Case;\n  onAnalyze: (data: Case) => void;\n}\n\nexport const CaseCard: React.FC<CaseCardProps> = ({ data, onAnalyze }) => {\n  return (\n    <div className=\"bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full\">\n      <div className=\"p-5 flex-grow\">\n        <div className=\"flex justify-between items-start mb-3\">\n          <div className=\"bg-slate-100 text-slate-600 text-[10px] uppercase font-bold px-2 py-1 rounded tracking-wider flex items-center\">\n            <Gavel size={10} className=\"mr-1\" />\n            {data.jurisdiction || 'Unknown Jurisdiction'}\n          </div>\n          <div className=\"text-xs text-slate-500 font-medium flex items-center\">\n            <Calendar size={12} className=\"mr-1\" />\n            {data.date || 'N/A'}\n          </div>\n        </div>\n\n        <h3 className=\"text-lg font-serif font-bold text-slate-900 mb-1 leading-tight\">\n          {data.name}\n        </h3>\n        \n        {data.citation && (\n          <p className=\"text-xs font-mono text-brand-600 mb-3 block\">\n            {data.citation}\n          </p>\n        )}\n\n        <p className=\"text-sm text-slate-600 leading-relaxed mb-4 line-clamp-4\">\n          {data.summary}\n        </p>\n\n        <div className=\"flex flex-wrap gap-2 mt-auto\">\n          {data.tags?.map((tag, idx) => (\n            <span key={idx} className=\"inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-50 text-brand-700\">\n              <Tag size={10} className=\"mr-1\" />\n              {tag}\n            </span>\n          ))}\n        </div>\n      </div>\n\n      <div className=\"bg-slate-50 px-5 py-3 border-t border-slate-100 flex justify-between items-center\">\n        <button \n          onClick={() => onAnalyze(data)}\n          className=\"text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors flex items-center group\"\n        >\n          <Scale size={16} className=\"mr-2 group-hover:scale-110 transition-transform\" />\n          Analyze Case\n        </button>\n        <ChevronRight size={16} className=\"text-slate-300\" />\n      </div>\n    </div>\n  );\n};"
+            }
+          ]
+        },
+        {
+          "path": "components/ResultsToolbar.tsx",
+          "generationType": 1,
+          "isDone": true,
+          "description": "New component for sorting and filtering results",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React from 'react';\nimport { ArrowDownAZ, Filter } from 'lucide-react';\nimport { SortOption } from '../types';\n\ninterface ResultsToolbarProps {\n  totalResults: number;\n  sortOption: SortOption;\n  onSortChange: (option: SortOption) => void;\n  jurisdictions: string[];\n  selectedJurisdiction: string;\n  onJurisdictionChange: (jurisdiction: string) => void;\n}\n\nexport const ResultsToolbar: React.FC<ResultsToolbarProps> = ({\n  totalResults,\n  sortOption,\n  onSortChange,\n  jurisdictions,\n  selectedJurisdiction,\n  onJurisdictionChange\n}) => {\n  return (\n    <div className=\"bg-white border-b border-slate-200 sticky top-16 z-40 shadow-sm\">\n      <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3\">\n        <div className=\"flex flex-col sm:flex-row justify-between items-center gap-4\">\n          \n          <div className=\"text-sm font-medium text-slate-600\">\n            Found <span className=\"text-slate-900 font-bold\">{totalResults}</span> legal precedents\n          </div>\n\n          <div className=\"flex items-center space-x-3 w-full sm:w-auto\">\n            {/* Jurisdiction Filter */}\n            <div className=\"relative flex-1 sm:flex-none\">\n              <div className=\"absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none\">\n                <Filter size={14} className=\"text-slate-400\" />\n              </div>\n              <select\n                value={selectedJurisdiction}\n                onChange={(e) => onJurisdictionChange(e.target.value)}\n                className=\"block w-full sm:w-48 pl-9 pr-8 py-2 text-sm border-slate-300 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm rounded-lg border bg-slate-50 hover:bg-white transition-colors cursor-pointer appearance-none\"\n              >\n                <option value=\"ALL\">All Jurisdictions</option>\n                {jurisdictions.map((j) => (\n                  <option key={j} value={j}>{j}</option>\n                ))}\n              </select>\n            </div>\n\n            {/* Sort Dropdown */}\n            <div className=\"relative flex-1 sm:flex-none\">\n              <div className=\"absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none\">\n                <ArrowDownAZ size={14} className=\"text-slate-400\" />\n              </div>\n              <select\n                value={sortOption}\n                onChange={(e) => onSortChange(e.target.value as SortOption)}\n                className=\"block w-full sm:w-40 pl-9 pr-8 py-2 text-sm border-slate-300 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm rounded-lg border bg-slate-50 hover:bg-white transition-colors cursor-pointer appearance-none\"\n              >\n                <option value=\"relevance\">Relevance</option>\n                <option value=\"date_desc\">Newest First</option>\n                <option value=\"date_asc\">Oldest First</option>\n              </select>\n            </div>\n          </div>\n\n        </div>\n      </div>\n    </div>\n  );\n};"
+            }
+          ]
+        },
+        {
+          "path": "App.tsx",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Update App to handle structured case data, sorting, and filtering",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React, { useState, useMemo } from 'react';\nimport { Header } from './components/Header';\nimport { SearchArea } from './components/SearchArea';\nimport { AnalysisModal } from './components/AnalysisModal';\nimport { CaseCard } from './components/CaseCard';\nimport { ResultsToolbar } from './components/ResultsToolbar';\nimport { searchCases, analyzeLegalConcept } from './services/gemini';\nimport { SearchStatus, GroundingChunk, CaseAnalysis, Case, SortOption } from './types';\nimport { ExternalLink, AlertTriangle, BookOpen } from 'lucide-react';\n\nconst App: React.FC = () => {\n  const [status, setStatus] = useState<SearchStatus>(SearchStatus.IDLE);\n  \n  // Data State\n  const [cases, setCases] = useState<Case[]>([]);\n  const [groundingSources, setGroundingSources] = useState<GroundingChunk[]>([]);\n  const [errorMsg, setErrorMsg] = useState<string | null>(null);\n\n  // Filter & Sort State\n  const [sortOption, setSortOption] = useState<SortOption>('relevance');\n  const [jurisdictionFilter, setJurisdictionFilter] = useState<string>('ALL');\n\n  // Analysis State\n  const [isModalOpen, setIsModalOpen] = useState(false);\n  const [analysisLoading, setAnalysisLoading] = useState(false);\n  const [analysisResult, setAnalysisResult] = useState<CaseAnalysis | null>(null);\n\n  const handleSearch = async (query: string) => {\n    setStatus(SearchStatus.SEARCHING);\n    setErrorMsg(null);\n    setCases([]);\n    setGroundingSources([]);\n\n    try {\n      const response = await searchCases(query);\n      setCases(response.cases);\n      setGroundingSources(response.groundingChunks);\n      setStatus(SearchStatus.SUCCESS);\n      \n      // Reset filters on new search\n      setSortOption('relevance');\n      setJurisdictionFilter('ALL');\n    } catch (err: any) {\n      console.error(err);\n      setErrorMsg(\"Unable to complete search. Please check your connection or try again.\");\n      setStatus(SearchStatus.ERROR);\n    }\n  };\n\n  const handleAnalyze = async (caseData: Case) => {\n    setIsModalOpen(true);\n    setAnalysisLoading(true);\n    setAnalysisResult(null);\n    \n    try {\n      // Construct a rich context for the analysis model\n      const context = `\n        Case Name: ${caseData.name}\n        Citation: ${caseData.citation}\n        Jurisdiction: ${caseData.jurisdiction}\n        Date: ${caseData.date}\n        Summary: ${caseData.summary}\n      `;\n      const result = await analyzeLegalConcept(context);\n      setAnalysisResult(result);\n    } catch (err) {\n      console.error(err);\n    } finally {\n      setAnalysisLoading(false);\n    }\n  };\n\n  // Derived State: Jurisdictions List\n  const availableJurisdictions = useMemo(() => {\n    const juris = new Set(cases.map(c => c.jurisdiction).filter(Boolean));\n    return Array.from(juris).sort();\n  }, [cases]);\n\n  // Derived State: Filtered & Sorted Cases\n  const filteredCases = useMemo(() => {\n    let result = [...cases];\n\n    // Filter\n    if (jurisdictionFilter !== 'ALL') {\n      result = result.filter(c => c.jurisdiction === jurisdictionFilter);\n    }\n\n    // Sort\n    if (sortOption === 'date_desc') {\n      result.sort((a, b) => (new Date(b.date || 0).getTime()) - (new Date(a.date || 0).getTime()));\n    } else if (sortOption === 'date_asc') {\n      result.sort((a, b) => (new Date(a.date || 0).getTime()) - (new Date(b.date || 0).getTime()));\n    }\n    // 'relevance' assumes API order is best, no sort needed.\n\n    return result;\n  }, [cases, jurisdictionFilter, sortOption]);\n\n  return (\n    <div className=\"min-h-screen bg-slate-50 flex flex-col\">\n      <Header />\n      \n      <main className=\"flex-grow flex flex-col\">\n        <SearchArea onSearch={handleSearch} isSearching={status === SearchStatus.SEARCHING} />\n\n        {/* Error State */}\n        {status === SearchStatus.ERROR && (\n          <div className=\"max-w-4xl mx-auto px-4 mt-8 w-full\">\n            <div className=\"bg-red-50 border border-red-200 rounded-lg p-4 flex items-center text-red-700\">\n              <AlertTriangle className=\"h-5 w-5 mr-3\" />\n              {errorMsg}\n            </div>\n          </div>\n        )}\n\n        {/* Results State */}\n        {status === SearchStatus.SUCCESS && (\n          <>\n            <ResultsToolbar \n              totalResults={filteredCases.length}\n              sortOption={sortOption}\n              onSortChange={setSortOption}\n              jurisdictions={availableJurisdictions}\n              selectedJurisdiction={jurisdictionFilter}\n              onJurisdictionChange={setJurisdictionFilter}\n            />\n\n            <div className=\"flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full\">\n              <div className=\"grid grid-cols-1 lg:grid-cols-4 gap-8 items-start\">\n                \n                {/* Left Column: Case Cards */}\n                <div className=\"lg:col-span-3\">\n                  {filteredCases.length === 0 ? (\n                    <div className=\"text-center py-20 bg-white rounded-2xl border border-slate-200 border-dashed\">\n                      <BookOpen className=\"h-10 w-10 text-slate-300 mx-auto mb-4\" />\n                      <h3 className=\"text-lg font-medium text-slate-900\">No cases found</h3>\n                      <p className=\"text-slate-500\">Try adjusting your filters or search query.</p>\n                    </div>\n                  ) : (\n                    <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                      {filteredCases.map((caseItem, index) => (\n                        <CaseCard \n                          key={`${caseItem.name}-${index}`} \n                          data={caseItem} \n                          onAnalyze={handleAnalyze} \n                        />\n                      ))}\n                    </div>\n                  )}\n                </div>\n\n                {/* Right Column: Sources Sticky Sidebar */}\n                <div className=\"lg:col-span-1 space-y-6\">\n                  <div className=\"bg-white rounded-xl shadow-sm border border-slate-200 p-5 sticky top-36\">\n                    <h3 className=\"text-xs font-bold text-slate-900 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2\">\n                      Verified Sources\n                    </h3>\n                    \n                    {groundingSources.length === 0 ? (\n                      <p className=\"text-sm text-slate-500 italic\">No direct web sources linked.</p>\n                    ) : (\n                      <ul className=\"space-y-3\">\n                        {groundingSources.map((source, index) => (\n                          <li key={index} className=\"group\">\n                            <a \n                              href={source.web?.uri} \n                              target=\"_blank\" \n                              rel=\"noopener noreferrer\"\n                              className=\"block p-3 rounded-lg bg-slate-50 hover:bg-brand-50 border border-transparent hover:border-brand-200 transition-all duration-200\"\n                            >\n                              <div className=\"flex justify-between items-start mb-1\">\n                                <span className=\"text-[10px] font-bold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded\">\n                                  REF {index + 1}\n                                </span>\n                                <ExternalLink className=\"h-3 w-3 text-slate-400 group-hover:text-brand-500\" />\n                              </div>\n                              <p className=\"text-xs text-slate-800 font-medium line-clamp-2 leading-snug\">\n                                {source.web?.title || \"Untitled Source\"}\n                              </p>\n                            </a>\n                          </li>\n                        ))}\n                      </ul>\n                    )}\n                    \n                    <div className=\"mt-6 pt-4 border-t border-slate-100\">\n                      <p className=\"text-[10px] text-slate-400 leading-tight\">\n                        LexiFind aggregates public legal information. Verify all citations with official court records.\n                      </p>\n                    </div>\n                  </div>\n                </div>\n\n              </div>\n            </div>\n          </>\n        )}\n      </main>\n\n      {/* Analysis Modal */}\n      <AnalysisModal \n        isOpen={isModalOpen} \n        onClose={() => setIsModalOpen(false)} \n        analysis={analysisResult}\n        isLoading={analysisLoading}\n      />\n    </div>\n  );\n};\n\nexport default App;"
+            }
+          ]
+        }
+      ]
+    },
+    "createdTimestamp": {
+      "seconds": 1770930754,
+      "nanos": 596000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770930756,
+      "nanos": 665000000
+    }
+  },
+  {
+    "id": 9,
+    "author": "user",
+    "payload": {
+      "type": "text",
+      "text": "add function to access/download the full judgement",
+      "files": [],
+      "fileUploads": [],
+      "cssBlocks": [],
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770930936,
+      "nanos": 480000000
+    }
+  },
+  {
+    "id": 10,
+    "author": "model",
+    "payload": {
+      "type": "thinking",
+      "text": "**Considering Case Details**\n\nI'm focusing on incorporating functionality for accessing the full text of court judgments. Right now, my `Case` interface holds basic metadata: name, citation, jurisdiction, date, summary, and tags. I need to figure out how to augment the `searchCases` function, which currently leverages `googleSearch` to gather this initial data, to retrieve and expose the complete judgments.\n\n\n**Adding URL for Judgment**\n\nI'm now implementing the ability to access full judgments. My plan includes updating the `Case` interface in `types.ts` to include a `fullTextUrl` field, enabling the retrieval of the complete text. The `searchCases` prompt and schema in `services/gemini.ts` will be updated to ask for and include this URL. Finally, I will add a \"Read Full Judgment\" button or link in the `CaseCard` component of `components/CaseCard.tsx`.\n\n\n**Refining Retrieval Strategy**\n\nI'm now refining the retrieval strategy. I'm focusing on strengthening the prompt in `services/gemini.ts` to explicitly instruct the model to locate a full-text URL within the search results, leveraging the grounding chunks provided by the `googleSearch` tool. This involves an update to the `searchCases` prompt to request the full text URL, along with an update to the `responseSchema` to include a `fullTextUrl` field. I'm also preparing to add a \"Read Judgment\" button to the `CaseCard` component.\n\n\n**Integrating Full Judgment Link**\n\nI'm now streamlining the integration of the full judgment link. I've confirmed that `metadata.json`, `index.html`, `index.tsx`, and `App.tsx` don't require modification, and the `Case` object will pass the data as needed to `CaseCard`. I am now modifying the `services/gemini.ts` prompt in `searchCases`, to request an explicit search for a direct link or detailed report of the judgment. In `components/CaseCard.tsx`, I am updating the footer to display a \"Read Full Judgment\" button if a URL is available.\n\n\n**Implementing URL Access**\n\nI'm now integrating the full judgment URL, explicitly updating the prompt to pinpoint URLs within search results. In `types.ts`, I've added `fullTextUrl` to the `Case` interface. I'm updating the prompt in `services/gemini.ts` to be very explicit about finding and returning the URL, using `GroundingChunk` web data. The `CaseCard` is updated to show a button for the judgment. I'm focusing on ensuring direct URL retrieval. I'm building out the new functionality by implementing the new XML elements in the types and card components.\n\n\n**Refining Data Extraction**\n\nI'm now refining data extraction for case details and full text URLs, leveraging Google Search. I'm focusing on strengthening instructions to pinpoint full judgment URLs. For each case, I'll extract jurisdiction, date, case number, summary, a direct URL to full judgment, and relevant tags. The schema will incorporate a `fullTextUrl` string, and I'll ensure any known date inaccuracies are handled. The 'Read Full Judgment' button will be integrated.\n\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770930936,
+      "nanos": 480000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770930955,
+      "nanos": 717000000
+    }
+  },
+  {
+    "id": 11,
+    "author": "model",
+    "payload": {
+      "type": "text",
+      "text": "Here is the specification to add functionality for accessing and downloading full judgments.\n\n### Specification\n\n1.  **Data Model Update**:\n    *   Update the `Case` interface in `types.ts` to include an optional `fullTextUrl` field.\n\n2.  **Intelligent URL Extraction**:\n    *   Update the `searchCases` prompt in `services/gemini.ts` to explicitly instruct the model to find direct links to the full judgment text or official court records (e.g., from Justia, BAILII, CourtListener, or official government sites).\n    *   Update the `responseSchema` to include the `fullTextUrl` property.\n\n3.  **UI Update (Case Card)**:\n    *   Modify `components/CaseCard.tsx` to display a \"Read Judgment\" action button.\n    *   This button will only appear if a URL was successfully extracted.\n    *   It will open the link in a new tab, allowing users to read or download the PDF/text depending on the source.\n\n### Code Updates\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770930955,
+      "nanos": 717000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770930955,
+      "nanos": 989000000
+    }
+  },
+  {
+    "id": 12,
+    "author": "model",
+    "payload": {
+      "type": "generationTable",
+      "entries": [
+        {
+          "path": "types.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Add fullTextUrl to Case interface",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "export interface GroundingChunk {\n  web?: {\n    uri: string;\n    title: string;\n  };\n}\n\nexport interface Case {\n  name: string;\n  citation: string;\n  jurisdiction: string;\n  date: string;\n  summary: string;\n  tags: string[];\n  fullTextUrl?: string;\n}\n\nexport interface SearchResponse {\n  cases: Case[];\n  groundingChunks: GroundingChunk[];\n}\n\nexport enum SearchStatus {\n  IDLE = 'IDLE',\n  SEARCHING = 'SEARCHING',\n  ANALYZING = 'ANALYZING',\n  SUCCESS = 'SUCCESS',\n  ERROR = 'ERROR',\n}\n\nexport interface CaseAnalysis {\n  summary: string;\n  keyPoints: string[];\n  implications: string;\n}\n\nexport type SortOption = 'relevance' | 'date_desc' | 'date_asc';"
+            }
+          ]
+        },
+        {
+          "path": "services/gemini.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Update prompt and schema to extract full judgment URLs",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import { GoogleGenAI, Tool, Type } from \"@google/genai\";\nimport { SearchResponse, CaseAnalysis, Case } from \"../types\";\n\n// Helper to ensure API key exists\nconst getClient = () => {\n  const apiKey = process.env.API_KEY;\n  if (!apiKey) {\n    throw new Error(\"API Key is missing. Please ensure process.env.API_KEY is available.\");\n  }\n  return new GoogleGenAI({ apiKey });\n};\n\n/**\n * Searches for court cases using the `googleSearch` tool and returns structured JSON.\n */\nexport const searchCases = async (query: string): Promise<SearchResponse> => {\n  const ai = getClient();\n  const modelId = 'gemini-3-flash-preview'; \n\n  const prompt = `\n    Search for court cases worldwide related to: \"${query}\".\n    \n    Goal: Identify real, specific court cases that match the query and provide links to their full text/judgment where available.\n    \n    Instructions:\n    1. Use Google Search to find accurate case details.\n    2. Return a list of cases found.\n    3. For each case, extract:\n       - Jurisdiction\n       - Date (YYYY-MM-DD or YYYY)\n       - Case Number (Citation)\n       - Brief summary\n       - A direct URL to the full judgment text, PDF, or official case report (e.g. from Justia, BAILII, CanLII, CourtListener, or official court websites).\n    4. Assign relevant tags (e.g., \"Criminal\", \"Civil\", \"IP\", \"Constitutional\").\n    5. If the exact date is unknown, estimate the year based on the search results.\n  `;\n\n  try {\n    const response = await ai.models.generateContent({\n      model: modelId,\n      contents: prompt,\n      config: {\n        tools: [{ googleSearch: {} } as Tool],\n        responseMimeType: \"application/json\",\n        responseSchema: {\n          type: Type.OBJECT,\n          properties: {\n            cases: {\n              type: Type.ARRAY,\n              items: {\n                type: Type.OBJECT,\n                properties: {\n                  name: { type: Type.STRING, description: \"Name of the case (e.g., Roe v. Wade)\" },\n                  citation: { type: Type.STRING, description: \"Case number or official citation\" },\n                  jurisdiction: { type: Type.STRING, description: \"Court or Jurisdiction (e.g., US Supreme Court, UK High Court)\" },\n                  date: { type: Type.STRING, description: \"Date of decision in YYYY-MM-DD or YYYY format\" },\n                  summary: { type: Type.STRING, description: \"Concise summary of the holding\" },\n                  tags: { type: Type.ARRAY, items: { type: Type.STRING } },\n                  fullTextUrl: { type: Type.STRING, description: \"URL to the full text judgment or official page\" }\n                }\n              }\n            }\n          }\n        }\n      },\n    });\n\n    // Parse the JSON response\n    const jsonText = response.text || '{ \"cases\": [] }';\n    let parsedData: { cases: Case[] } = { cases: [] };\n    \n    try {\n      parsedData = JSON.parse(jsonText);\n    } catch (e) {\n      console.warn(\"Failed to parse JSON directly, attempting cleanup\", e);\n      // Fallback cleanup if model includes markdown blocks despite mimeType\n      const cleanJson = jsonText.replace(/```json/g, '').replace(/```/g, '');\n      parsedData = JSON.parse(cleanJson);\n    }\n\n    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];\n\n    return {\n      cases: parsedData.cases || [],\n      groundingChunks: groundingChunks.map((chunk: any) => ({\n        web: chunk.web ? { uri: chunk.web.uri, title: chunk.web.title } : undefined\n      })).filter((c: any) => c.web !== undefined)\n    };\n\n  } catch (error) {\n    console.error(\"Search failed:\", error);\n    throw error;\n  }\n};\n\n/**\n * Performs a deeper analysis of a specific legal concept or text using the Pro model.\n */\nexport const analyzeLegalConcept = async (context: string): Promise<CaseAnalysis> => {\n  const ai = getClient();\n  const modelId = 'gemini-3-pro-preview';\n\n  const prompt = `\n    Analyze the following legal case summary or text and provide a structured breakdown.\n    \n    Context:\n    \"${context}\"\n\n    Return the result in JSON format with the following keys:\n    - summary: A professional executive summary (max 3 sentences).\n    - keyPoints: An array of strings representing the key legal arguments or facts.\n    - implications: A string explaining the broader legal or social implications of this.\n  `;\n\n  try {\n    const response = await ai.models.generateContent({\n      model: modelId,\n      contents: prompt,\n      config: {\n        responseMimeType: \"application/json\",\n      }\n    });\n\n    const text = response.text || \"{}\";\n    return JSON.parse(text) as CaseAnalysis;\n\n  } catch (error) {\n    console.error(\"Analysis failed:\", error);\n    return {\n      summary: \"Could not generate analysis.\",\n      keyPoints: [\"Analysis unavailable\"],\n      implications: \"Please try again.\"\n    };\n  }\n};"
+            }
+          ]
+        },
+        {
+          "path": "components/CaseCard.tsx",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Add Read Judgment button to card footer",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import React from 'react';\nimport { Calendar, Gavel, Scale, Tag, ChevronRight, FileText } from 'lucide-react';\nimport { Case } from '../types';\n\ninterface CaseCardProps {\n  data: Case;\n  onAnalyze: (data: Case) => void;\n}\n\nexport const CaseCard: React.FC<CaseCardProps> = ({ data, onAnalyze }) => {\n  return (\n    <div className=\"bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow duration-200 overflow-hidden flex flex-col h-full\">\n      <div className=\"p-5 flex-grow\">\n        <div className=\"flex justify-between items-start mb-3\">\n          <div className=\"bg-slate-100 text-slate-600 text-[10px] uppercase font-bold px-2 py-1 rounded tracking-wider flex items-center\">\n            <Gavel size={10} className=\"mr-1\" />\n            {data.jurisdiction || 'Unknown Jurisdiction'}\n          </div>\n          <div className=\"text-xs text-slate-500 font-medium flex items-center\">\n            <Calendar size={12} className=\"mr-1\" />\n            {data.date || 'N/A'}\n          </div>\n        </div>\n\n        <h3 className=\"text-lg font-serif font-bold text-slate-900 mb-1 leading-tight\">\n          {data.name}\n        </h3>\n        \n        {data.citation && (\n          <p className=\"text-xs font-mono text-brand-600 mb-3 block\">\n            {data.citation}\n          </p>\n        )}\n\n        <p className=\"text-sm text-slate-600 leading-relaxed mb-4 line-clamp-4\">\n          {data.summary}\n        </p>\n\n        <div className=\"flex flex-wrap gap-2 mt-auto\">\n          {data.tags?.map((tag, idx) => (\n            <span key={idx} className=\"inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-brand-50 text-brand-700\">\n              <Tag size={10} className=\"mr-1\" />\n              {tag}\n            </span>\n          ))}\n        </div>\n      </div>\n\n      <div className=\"bg-slate-50 px-5 py-3 border-t border-slate-100 flex justify-between items-center gap-3\">\n        <button \n          onClick={() => onAnalyze(data)}\n          className=\"text-sm font-semibold text-brand-600 hover:text-brand-800 transition-colors flex items-center group whitespace-nowrap\"\n        >\n          <Scale size={16} className=\"mr-2 group-hover:scale-110 transition-transform\" />\n          Analyze\n        </button>\n\n        {data.fullTextUrl ? (\n          <a \n            href={data.fullTextUrl}\n            target=\"_blank\"\n            rel=\"noopener noreferrer\"\n            className=\"text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors flex items-center group whitespace-nowrap ml-auto\"\n          >\n            <FileText size={16} className=\"mr-2 text-slate-400 group-hover:text-slate-600\" />\n            Read Judgment\n          </a>\n        ) : (\n          <span className=\"text-xs text-slate-400 italic ml-auto cursor-not-allowed flex items-center\">\n            Full text unavailable\n          </span>\n        )}\n      </div>\n    </div>\n  );\n};"
+            }
+          ]
+        }
+      ]
+    },
+    "createdTimestamp": {
+      "seconds": 1770930958,
+      "nanos": 80000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770930959,
+      "nanos": 880000000
+    }
+  },
+  {
+    "id": 14,
+    "author": "user",
+    "payload": {
+      "type": "text",
+      "text": "in the current search result, clicking the \"red judgment\" for the [2025] hkca1024 case seem redirect to wrong case judgment",
+      "files": [],
+      "fileUploads": [],
+      "cssBlocks": [],
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770931263,
+      "nanos": 367000000
+    }
+  },
+  {
+    "id": 15,
+    "author": "model",
+    "payload": {
+      "type": "thinking",
+      "text": "**Analyzing Redirect Behavior**\n\nI'm currently investigating a redirect issue. It seems the \"Read Judgment\" link for a particular case, like \"[2025] hkca1024\", leads to the incorrect judgment. My initial thought is the search model might be generating the wrong URL or grabbing a generic search result URL instead of the specific judgment. Further digging is needed to pinpoint the exact cause.\n\n\n**Improving URL Extraction**\n\nI'm focusing on enhancing the `fullTextUrl` extraction. The current issue is the lack of specificity for the case. To address this, I'm refining the prompt to ensure the selected URL matches the case citation. I'm prioritizing direct links from reputable legal databases or official judiciary sites. I'm also considering providing a high-quality search link if a direct link isn't found, as \"access/download\" functionality is important. I'm adding instructions to be precise and to prioritize reliable legal repositories, implicitly relying on search output.\n\n\n**Refining Direct Link Extraction**\n\nI've added a description to `fullTextUrl` to emphasize a direct link to the specific case judgment, avoiding generic indexes. In `services/gemini.ts`, I updated the prompt to prioritize finding the correct direct link to full judgments. The revised prompt includes clear instructions emphasizing accuracy and direct URL extraction. The goal now is to identify real court cases and precisely extract their direct links.\n\n\n**Enforcing URL Accuracy**\n\nI'm now implementing stricter guidelines for URL extraction within `services/gemini.ts`. The focus is on ensuring a high degree of confidence in the extracted link. My instructions now explicitly require the model to only provide links from reliable legal databases or official judiciary sites, and *only* if the link is verifiably associated with the specified case number. No link is preferred over an incorrect one. I'm also planning to check the citation against the URL, where possible, to further improve accuracy. I will be looking into potential UI improvements too.\n\n\n**Prioritizing Reliable Links**\n\nI've updated `services/gemini.ts`, tightening the prompt for `fullTextUrl` extraction. My new focus is exclusively on direct links to specific judgments from verified legal databases. I'm now insisting on matching the extracted URL with the case number, while prioritizing reputable sources to eliminate inaccurate or generic URLs. I want to improve precision and build trust in the extracted URLs.\n\n\n**Enhancing Link Reliability**\n\nI'm now revising my approach to emphasize URL validity. I've adjusted the prompt to instruct the model to return a null value if a direct, specific link cannot be found, rather than providing a generic or incorrect one. This should significantly reduce inaccuracies. I'm also specifying \"HKLII\" as a preferred source in this iteration, and refining instructions to prevent inaccurate search links.\n\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770931263,
+      "nanos": 367000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770931282,
+      "nanos": 852000000
+    }
+  },
+  {
+    "id": 16,
+    "author": "model",
+    "payload": {
+      "type": "text",
+      "text": "To address the issue of incorrect judgment links (specifically for cases like `[2025] hkca1024` redirecting to the wrong place), I will refine the prompt in `services/gemini.ts`.\n\nThe key change is to make the model **stricter** about URL selection. It must now verify that the URL specifically points to the judgment text (e.g., on HKLII, BAILII, Justia) rather than a general search result or a similar but incorrect case. I will instruct it to leave the field empty if a 100% verified match isn't found, preventing misleading redirects.\n\n### Code Updates\n\n",
+      "cMarkNode": {}
+    },
+    "createdTimestamp": {
+      "seconds": 1770931282,
+      "nanos": 852000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770931283,
+      "nanos": 103000000
+    }
+  },
+  {
+    "id": 17,
+    "author": "model",
+    "payload": {
+      "type": "generationTable",
+      "entries": [
+        {
+          "path": "services/gemini.ts",
+          "generationType": 1,
+          "isDone": true,
+          "description": "Update search prompt to strictly verify judgment URLs and prioritize specific legal databases",
+          "diffs": [
+            {
+              "target": "",
+              "replacement": "import { GoogleGenAI, Tool, Type } from \"@google/genai\";\nimport { SearchResponse, CaseAnalysis, Case } from \"../types\";\n\n// Helper to ensure API key exists\nconst getClient = () => {\n  const apiKey = process.env.API_KEY;\n  if (!apiKey) {\n    throw new Error(\"API Key is missing. Please ensure process.env.API_KEY is available.\");\n  }\n  return new GoogleGenAI({ apiKey });\n};\n\n/**\n * Searches for court cases using the `googleSearch` tool and returns structured JSON.\n */\nexport const searchCases = async (query: string): Promise<SearchResponse> => {\n  const ai = getClient();\n  const modelId = 'gemini-3-flash-preview'; \n\n  const prompt = `\n    Search for court cases worldwide related to: \"${query}\".\n    \n    Goal: Identify real, specific court cases that match the query and provide ACCURATE links to their full text/judgment.\n    \n    Instructions:\n    1. Use Google Search to find accurate case details.\n    2. Return a list of cases found.\n    3. For each case, extract:\n       - Jurisdiction\n       - Date (YYYY-MM-DD or YYYY)\n       - Case Number (Citation)\n       - Brief summary\n       - fullTextUrl: A DIRECT URL to the specific judgment text or PDF.\n         * CRITICAL: The URL MUST point to the specific case judgment, not a general index or homepage.\n         * Prioritize official legal repositories: \n           - Hong Kong: HKLII (hklii.org) or Judiciary website\n           - UK/Ireland: BAILII, National Archives\n           - Canada: CanLII\n           - US: Justia, CourtListener, Google Scholar Case Law\n           - Australia: AustLII\n         * If you cannot find a direct, verifiable link to the specific judgment, leave this field empty (null). Do not guess.\n    4. Assign relevant tags (e.g., \"Criminal\", \"Civil\", \"IP\", \"Constitutional\").\n    5. If the exact date is unknown, estimate the year based on the search results.\n  `;\n\n  try {\n    const response = await ai.models.generateContent({\n      model: modelId,\n      contents: prompt,\n      config: {\n        tools: [{ googleSearch: {} } as Tool],\n        responseMimeType: \"application/json\",\n        responseSchema: {\n          type: Type.OBJECT,\n          properties: {\n            cases: {\n              type: Type.ARRAY,\n              items: {\n                type: Type.OBJECT,\n                properties: {\n                  name: { type: Type.STRING, description: \"Name of the case (e.g., Roe v. Wade)\" },\n                  citation: { type: Type.STRING, description: \"Case number or official citation\" },\n                  jurisdiction: { type: Type.STRING, description: \"Court or Jurisdiction (e.g., US Supreme Court, UK High Court)\" },\n                  date: { type: Type.STRING, description: \"Date of decision in YYYY-MM-DD or YYYY format\" },\n                  summary: { type: Type.STRING, description: \"Concise summary of the holding\" },\n                  tags: { type: Type.ARRAY, items: { type: Type.STRING } },\n                  fullTextUrl: { type: Type.STRING, description: \"Verified URL to the full text judgment or official page\" }\n                }\n              }\n            }\n          }\n        }\n      },\n    });\n\n    // Parse the JSON response\n    const jsonText = response.text || '{ \"cases\": [] }';\n    let parsedData: { cases: Case[] } = { cases: [] };\n    \n    try {\n      parsedData = JSON.parse(jsonText);\n    } catch (e) {\n      console.warn(\"Failed to parse JSON directly, attempting cleanup\", e);\n      // Fallback cleanup if model includes markdown blocks despite mimeType\n      const cleanJson = jsonText.replace(/```json/g, '').replace(/```/g, '');\n      parsedData = JSON.parse(cleanJson);\n    }\n\n    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];\n\n    return {\n      cases: parsedData.cases || [],\n      groundingChunks: groundingChunks.map((chunk: any) => ({\n        web: chunk.web ? { uri: chunk.web.uri, title: chunk.web.title } : undefined\n      })).filter((c: any) => c.web !== undefined)\n    };\n\n  } catch (error) {\n    console.error(\"Search failed:\", error);\n    throw error;\n  }\n};\n\n/**\n * Performs a deeper analysis of a specific legal concept or text using the Pro model.\n */\nexport const analyzeLegalConcept = async (context: string): Promise<CaseAnalysis> => {\n  const ai = getClient();\n  const modelId = 'gemini-3-pro-preview';\n\n  const prompt = `\n    Analyze the following legal case summary or text and provide a structured breakdown.\n    \n    Context:\n    \"${context}\"\n\n    Return the result in JSON format with the following keys:\n    - summary: A professional executive summary (max 3 sentences).\n    - keyPoints: An array of strings representing the key legal arguments or facts.\n    - implications: A string explaining the broader legal or social implications of this.\n  `;\n\n  try {\n    const response = await ai.models.generateContent({\n      model: modelId,\n      contents: prompt,\n      config: {\n        responseMimeType: \"application/json\",\n      }\n    });\n\n    const text = response.text || \"{}\";\n    return JSON.parse(text) as CaseAnalysis;\n\n  } catch (error) {\n    console.error(\"Analysis failed:\", error);\n    return {\n      summary: \"Could not generate analysis.\",\n      keyPoints: [\"Analysis unavailable\"],\n      implications: \"Please try again.\"\n    };\n  }\n};"
+            }
+          ]
+        }
+      ]
+    },
+    "createdTimestamp": {
+      "seconds": 1770931284,
+      "nanos": 282000000
+    },
+    "doneTimestamp": {
+      "seconds": 1770931295,
+      "nanos": 612000000
+    }
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "name": "LexiFind Global",
+  "description": "An intelligent worldwide court case search engine powered by Gemini. Find cases by parties, keywords, or case numbers with real-time web grounding and deep legal analysis.",
+  "requestFramePermissions": []
+}
